@@ -1,0 +1,321 @@
+﻿@import "../bootswatch/simplex/variables.less";
+@import "variables.less";
+
+.ng-cloak,
+*[ng-cloak] {
+	display: none;
+}
+
+html {
+	height: 100%;
+}
+
+body {
+	color: #434343;
+	font-family: Roboto, Helvetica, Arial, sans-serif;
+	font-size: 16px;
+}
+
+/* Basic HTML elements
+*/
+
+a {
+	text-decoration: none !important;
+}
+
+h1, h2, h3, h4, h5 {
+	margin-top: 0;
+}
+
+h1 {
+	font-size: 25px;
+	font-weight: 300;
+	padding-right: 25px;
+}
+
+/* Bootstrap mixins
+*/
+
+.breadcrumb {
+	margin-bottom: @sidebar-gutter * 1.5;
+	padding: 0;
+}
+
+.anonymous .breadcrumb {
+	display: none;
+}
+
+.panel-default > .panel-heading {
+	.clearfix();
+	padding: 6px 11px;
+
+	h2, h3, h4 {
+		.noselect();
+		float: left;
+		font-family: Montserrat, Roboto, sans-serif;
+		font-size: 18px;
+		font-weight: 400;
+		line-height: 26px;
+		margin-bottom: 0;
+	}
+
+	.panel-tools {
+		float: right;
+		list-style: none;
+		margin-bottom: 0;
+
+		> li {
+			float: left;
+
+			.btn {
+				position: relative;
+			}
+
+			.btn-sm {
+				padding: 3px 6px;
+			}
+
+			& + li {
+				margin-left: 5px;
+			}
+		}
+	}
+}
+
+.panel {
+	margin-bottom: 0;
+}
+
+.panel-body.no-padding {
+	padding: 0;
+}
+
+.row > div {
+	margin-bottom: @sidebar-gutter * 2;
+}
+
+/* Header
+*/
+
+#header {
+	.clearfix();
+	background: white;
+	border-bottom: 1px solid @border-light-color;
+	box-shadow: 0 1px 4px fade(@border-light-color, 33%);
+	padding: 0 15px;
+	position: relative;
+	z-index: 1000;
+
+	.brand {
+		float: left;
+		line-height: @header-height;
+		margin: 0;
+	}
+
+	.search {
+		float: left;
+		width: 675px;
+
+		input {
+			border: 1px solid @border-light-color;
+			display: block;
+			font-family: Montserrat, sans-serif;
+			font-size: 12.5px;
+			height: 32px;
+			outline: 0;
+			margin: 11px;
+			padding: 4px 8px;
+			width: 100%;
+
+			&:hover, &:focus {
+				box-shadow: 2px 2px 0px fade(@border-light-color, 33%) inset;
+			}
+		}
+	}
+
+	.profile {
+		float: right;
+		font-size: 17px;
+		line-height: @header-height;
+	}
+}
+
+#repeatingChars {
+	position: relative;
+
+	.repeat-dialog {
+		background: white;
+		border: 1px solid @border-light-color;
+		left: 0;
+		margin-top: 2px;
+		padding: 5px;
+		position: absolute;
+		top: 100%;
+		z-index: 2000;
+
+		label {
+			display: block;
+			font-size: 14px;
+			margin-bottom: 0;
+			width: 100%;
+		}
+	}
+}
+
+#sidebar {
+	border-right: 1px solid @border-light-color;
+	box-shadow: 1px 0 2px fade(@border-light-color, 33%);
+	height: 100%;
+	left: 0;
+	padding: (@header-height + @sidebar-gutter) @sidebar-gutter @sidebar-gutter @sidebar-gutter;
+	position: fixed;
+	top: 0;
+	width: @sidebar-width;
+	z-index: 800;
+
+	.command {
+		button {
+			display: block;
+			font-size: 15px;
+			font-weight: 500;
+			text-transform: uppercase;
+			width: 100%;
+		}
+	}
+}
+
+.anonymous #sidebar {
+	overflow: hidden;
+	padding: 0;
+	width: 0;
+}
+
+.nav {
+	margin-top: 15px;
+
+	ul {
+		list-style: none;
+		margin: 0;
+		padding-left: 0;
+	}
+
+	> .tv-child > .tv-parent {
+		margin-left: 0;
+	}
+
+	.tv-parent {
+		margin-left: 20px;
+	}
+
+	.tv-toggle > .fa-caret-right {
+		transform: rotate(90deg);
+		transition: all .115s linear;
+	}
+
+	.tv-toggle.tv-open > .fa-caret-right {
+		transform: rotate(0);
+	}
+
+
+	.tv-file {
+		margin-left: 20px;
+	}
+
+	.tv-parent > .tv-child > .tv-file {
+		margin-left: 40px;
+	}
+}
+
+#main {
+	@gutter: @sidebar-gutter * 2;
+
+	padding: (@gutter * 0.7) @gutter @gutter (@gutter + @sidebar-width);
+}
+
+.anonymous #main {
+	padding-left: @sidebar-gutter * 2;
+}
+
+#editor {
+	border: 0;
+	display: block;
+	font-family: monospace;
+	height: 330px;
+	outline: 0;
+	padding: @sidebar-gutter;
+	width: 100%;
+}
+
+#results {
+	height: 330px;
+
+	ul {
+		height: 100%;
+		list-style: none;
+		overflow-y: auto;
+		padding: 15px;
+
+		> li {
+			float: left;
+			line-height: 2.01;
+			position: relative;
+			top: -7px;
+			width: 33%;
+
+			> a {
+				color: inherit;
+				> span {
+					display: inline-block;
+					padding-right: 5px;
+				}
+
+				.fa {
+					color: @brand-success;
+					visibility: hidden;
+				}
+
+				&:hover {
+					.fa {
+						visibility: visible;
+					}
+				}
+			}
+		}
+	}
+}
+
+#savedresults {
+	height: 130px;
+
+	ul {
+		height: 100%;
+		list-style: none;
+		overflow-y: auto;
+		padding: 15px;
+
+		> li {
+			float: left;
+			line-height: 1.66;
+			margin-right: 32px;
+			position: relative;
+			top: -7px;
+
+			> a {
+				color: @brand-danger;
+			}
+
+			.delete {
+				margin-left: 3px;
+				position: relative;
+				top: 1px;
+				visibility: hidden;
+			}
+
+			&:hover {
+				.delete {
+					visibility: visible;
+				}
+			}
+		}
+	}
+}

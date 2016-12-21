@@ -1,0 +1,11 @@
+﻿<ul class="tv-child">
+	<li ng-if="folder.folders.length" ng-repeat="f in folder.folders" class="tv tv-parent">
+		<a href="#" class="tv-toggle">
+			<i class="fa fa-fw fa-caret-right"></i><i class="fa fa-fw fa-folder"></i> {{f.name}}
+		</a>
+		<tv-folder value="f" />
+	</li>
+	<li ng-if="folder.files.length" ng-repeat="f in folder.files" class="tv tv-file">
+		<a href="#"><i class="fa fa-fw fa-file-code-o"></i> {{f.name}}</a>
+	</li>
+</ul>

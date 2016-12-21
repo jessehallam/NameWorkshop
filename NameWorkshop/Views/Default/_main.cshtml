@@ -1,0 +1,102 @@
+﻿<div role="main" id="main" ng-cloak>
+	<div class="breadcrumb-container">
+		<ol class="breadcrumb">
+			<li>My Documents</li>
+			<li>Project 1</li>
+			<li>File 1</li>
+		</ol>
+	</div>
+	<div class="row">
+		<div class="col-md-6">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h2>Editor</h2>
+					<ul class="panel-tools">
+						<li>
+							<a href="#" class="btn btn-sm btn-default"
+							   ng-click="model.editor.capitalize = !model.editor.capitalize">
+								Capitalize: <span>{{ model.editor.capitalize ? 'On' : 'Off' }}</span>
+							</a>
+						</li>
+						<li>
+							<a href="#" class="btn btn-sm btn-default"
+							   ng-click="model.editor.ignoreWhitespace = !model.editor.ignoreWhitespace">
+								Ignore Whitespace: <span>{{ model.editor.ignoreWhitespace ? 'On' : 'Off' }}</span>
+							</a>
+						</li>
+						<li id="repeatingChars">
+							<a href="#" class="btn btn-sm btn-default"
+							   ng-click="model.editor.maxRepeatingCharsEditing = true">
+								Max Repeating Chars: <span>{{ model.editor.maxRepeatingChars }}</span>
+							</a>
+							<div class="repeat-dialog" ng-cloak ng-show="model.editor.maxRepeatingCharsEditing">
+								<label>Enter Value:</label>
+								<input type="number" ng-model="model.editor.maxRepeatingChars"
+									   min="0"
+									   focus-when="model.editor.maxRepeatingCharsEditing"
+									   when-focus-lost="model.editor.maxRepeatingCharsEditing = false">
+							</div>
+						</li>
+						<li>
+							<a href="#" class="btn btn-sm btn-success"
+							   ng-click="execute()">
+								Execute <i class="fa fa-chevron-circle-right"></i>
+							</a>
+						</li>
+					</ul>
+				</div>
+				<div class="panel-body no-padding">
+					<textarea id="editor" autocomplete="off" spellcheck="false" ng-model="model.editor.text"></textarea>
+				</div>
+			</div>
+		</div>
+
+		<div class="col-md-6">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h2>Results</h2>
+
+				</div>
+				<div class="panel-body no-padding">
+					<div id="results">
+						<ul>
+							<li ng-repeat="value in model.results.items track by $index">
+								<a href="#" ng-click="saveItem(value)">
+									<span>{{ value }}</span><i class="fa fa-plus-circle"></i>
+								</a>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-12">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h2>Saved Results</h2>
+
+					<ul class="panel-tools">
+						<li>
+							<a href="#" class="btn btn-sm btn-primary"
+							   ng-click="model.results.savedItems = []">
+								Clear All
+							</a>
+						</li>
+					</ul>
+				</div>
+				<div class="panel-body no-padding">
+					<div id="savedresults">
+						<ul>
+							<li ng-repeat="value in model.results.savedItems track by $index">
+								{{ value }} <a href="#" class="delete" ng-click="removeSavedItem($index)"><i class="fa fa-times-circle"></i></a>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

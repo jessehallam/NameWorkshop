@@ -1,0 +1,20 @@
+﻿<header id="header">
+	<h1 class="brand">Name Workshop</h1>
+	<div class="search">
+		<input type="text" placeholder="Find a file" ng-cloak ng-show="user.authenticated">
+	</div>
+	<div class="profile">
+		<a href="#" ng-show="user.authenticated">
+			<span class="fa-stack">
+				<i class="fa fa-circle fa-stack-2x"></i>
+				<i class="fa fa-user fa-stack-1x fa-inverse"></i>
+			</span> {{user.name}}
+		</a>
+		<a href="#" ng-show="!user.authenticated" ng-click="signin()">
+			<span class="fa-stack">
+				<i class="fa fa-circle fa-stack-2x"></i>
+				<i class="fa fa-sign-in fa-stack-1x fa-inverse"></i>
+			</span> Sign In
+		</a>
+	</div>
+</header>

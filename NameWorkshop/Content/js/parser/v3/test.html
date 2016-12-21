@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="parser">
+
+<head>
+    <title>Test</title>
+    <script src="parser.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.8/angular.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.js"></script>
+
+    <style>
+        textarea {
+            font-family: monospace;
+        }
+
+        .token-list, .eval-list {
+            list-style: none;
+            margin-bottom: 0;
+            padding-left: 0;
+        }
+        
+        .token-list li, .eval-list li {
+            background-color: #dadada;
+            border-radius: 4px;
+            cursor: default;
+            display: inline-block;
+            margin: 2px;
+            min-width: 1.5em;
+            padding: 2px 5px;
+            text-align: center;
+        }
+    </style>
+
+    <script>
+        var app = angular.module('parser', []);
+
+        app.directive('bootstrapTooltip', function () {
+            return {
+                link: function (scope, element, attributes) {
+                    attributes.$observe('title', function () {
+                        element.tooltip();
+                    });
+                }
+            };
+        });
+
+        app.controller('MainController', function ($scope) {
+            $scope.init = function () {
+                $scope.lexInput = window.localStorage.lexInput || '';
+            };
+
+            $scope.generate = function () {
+                var results = [];
+                var program = $scope.reparse()
+                for (var i = 0; i < 10; i++) {
+                    results.push(program.eval());
+                }
+                $scope.evalList = results;
+            };
+
+            $scope.reparse = function () {
+                var parser = new Parser_v3.Parser($scope.lexTokens);
+                var program = $scope.program = parser.program();
+                return program;
+            };
+
+            $scope.$watch('lexInput', function (newValue) {
+                window.localStorage.lexInput = newValue;
+                if (!newValue) {
+                    $scope.lexTokens = [];
+                    return;
+                }
+                var lexer = new Parser_v3.Lexer(newValue);
+                $scope.lexTokens = lexer.readTokens();
+            });
+        });
+    </script>
+</head>
+
+<body ng-controller="MainController" ng-init="init()">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h3>Lexical Scanner</h3>
+            </div>
+        </div>
+        <div class="row form-group">
+            <div class="col-md-6">
+                <label>Input String:</label>
+                <textarea class="form-control" rows="5" ng-model="lexInput" ng-model-options="{debounce: 100}"></textarea>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Output Tokens</label>
+                    <ul class="token-list">
+                        <li ng-repeat="token in lexTokens">
+                            <span title="{{token.tok}}" bootstrap-tooltip>{{ token.val }}</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="form-group">
+                    <label>Expression Tree</label>
+                    <button type="button" class="btn btn-xs btn-success" ng-click="reparse()">Parse</button>
+                    <div>
+                        <pre><code>{{ program.toString() }}</code></pre>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Evaluation Results</label>
+                    <button type="button" class="btn btn-xs btn-success" ng-click="generate()">Generate</button>
+                    <ul class="eval-list">
+                        <li ng-repeat="item in evalList track by $index">
+                            <span>{{ item || '&nbsp;' }}</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

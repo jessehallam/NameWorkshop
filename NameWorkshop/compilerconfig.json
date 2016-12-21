@@ -1,0 +1,22 @@
+﻿[
+  {
+    "outputFile": "Content/js/treeview.js",
+    "inputFile": "Content/js/treeview.coffee"
+  },
+  {
+    "outputFile": "Content/js/app.js",
+    "inputFile": "Content/js/app.coffee"
+  },
+  {
+    "outputFile": "Content/js/panels.js",
+    "inputFile": "Content/js/panels.coffee"
+  },
+  {
+    "outputFile": "Content/js/parser/parser.js",
+    "inputFile": "Content/js/parser/parser.coffee"
+  },
+  {
+    "outputFile": "Content/js/parser/v3/parser.js",
+    "inputFile": "Content/js/parser/v3/parser.coffee"
+  }
+]

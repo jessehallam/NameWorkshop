@@ -6,7 +6,7 @@ app.service('parser', ->
     return
 )
 
-app.factory('generator', (parser) ->
+app.factory('generator', ($log, parser) ->
     stripRepeatingChars = (s, c) ->
         last = '\0'
         count = 0
@@ -23,9 +23,14 @@ app.factory('generator', (parser) ->
         if input and options.ignoreWhitespace
             input = input.replace(/\s|\r|\n/, -> '')
         lex = new parser.lexer(input)
-        par = new parser.parser(lex.readTokens())
+        tokens = lex.readTokens()
+        
+        $log.debug('Tokens:', tokens)
+        
+        par = new parser.parser(tokens)
         program = par.program()
         if not program then throw new Error('parser error')
+        $log.debug('Program:', program)
         return ->
             val = program.eval()
             if val and options.capitalize

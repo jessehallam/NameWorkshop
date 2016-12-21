@@ -1,3 +1,14 @@
+getHashCode = (str) ->
+    i = 0
+    l = 0
+    hval = 0x811c9dc5;
+    
+    for i in [0..str.length-1]
+        hval ^= str.charCodeAt(i)
+        hval += (hval << 1) + (hval << 4) + (hval << 7) + (hval << 8) + (hval << 24)
+    
+    return ("0000000" + (hval >>> 0).toString(16)).substr(-8)
+
 # [min, max)
 getRandom = (min, max) ->
     return Math.floor(Math.random() * (max - min)) + min;
@@ -11,6 +22,7 @@ lexStates = {
         { m: /</,  t: '<', next: 'named' }
         { m: /\[/, t: '[', next: 'range' }
         { m: /\{/, t: '{', next: 'rep' }
+        { m: /\*/, t: 'KLEENESTAR' }
         { m: /./, t: 'CHAR' }
     ]
 
@@ -103,6 +115,23 @@ class ItemsExpression extends ExpressionBase
         @items = []
     toString: -> 'ItemsExpression(' + @items.join(', ') + ')'
 
+class DistinctExpression extends ItemExpression
+    constructor: (@item) ->
+    eval: (context) ->
+        hash = @getHashCode()
+        i = context.distinctGroups[hash].indexOf(this)
+        if context.distinctCache[hash] == i
+            return @item.eval(context)
+        else
+            return ''
+    
+        # context.distinctCache = context.distinctCache or {}
+        # if context.distinctCache[@item.toString()] then return ''
+        # context.distinctCache[@item.toString()] = true
+        # return @item.eval(context)
+    getHashCode: -> getHashCode(@toString())
+    toString: -> 'DistinctExpression(' + @item + ')'
+
 class ExpressionList extends ItemsExpression
     eval: (context) ->
         return (item.eval(context) for item in @items).join('')
@@ -143,20 +172,27 @@ class RepeatExpression extends ExpressionBase
     toString: -> @expression.toString() + '{' + @repetition.min + ' - ' + @repetition.max + '}';
 
 class EvaluationExpression extends ItemExpression
-    constructor: (@item) ->
+    constructor: (@item, @args) ->
     eval: (context) ->
         context = context or {expressions: {}}
+        $.extend(context, @args)
+        for hash, collection of context.distinctGroups
+            context.distinctCache[hash] = getRandom(0, collection.length)
         return @item.eval(context)
     toString: -> @item.toString()
 
 class Parser
     constructor: (@input) ->
         @i = 0
+        @evalArgs = {
+            distinctCache: {}
+            distinctGroups: {}
+        }
 
     program: ->
         r = @$readExpressionBranch()
         if @$la() then throw new Error('Parse error')
-        return new EvaluationExpression(r)
+        return new EvaluationExpression(r, @evalArgs)
 
     $expect: (name) ->
         if @$la(0) == name
@@ -168,13 +204,25 @@ class Parser
         
     $la: (k = 0) ->
         return @input[@i + k].tok if @input[@i + k]
+        
+    $readDistinctExpression: ->
+        # KLEENESTAR <expression> KLEENESTAR
+        #
+        if not @$expect('KLEENESTAR') then return
+        if not exp = @$readExpression() then throw @$invalidToken()
+        if not @$expect('KLEENESTAR') then return
+        exp = new DistinctExpression(exp)
+        @evalArgs.distinctGroups[exp.getHashCode()] = @evalArgs.distinctGroups[exp.getHashCode()] || []
+        @evalArgs.distinctGroups[exp.getHashCode()].push(exp)
+        return exp
 
     $readExpression: ->
         # <capitalExpression>? 
-        # (<rangeExpression> | <namedExpression> | '(' <expression> ')' | <constantExpression>)
+        # (<distinctExpression> | <rangeExpression> | <namedExpression> | '(' <expression> ')' | <constantExpression>)
         # <repeatExpression> ;
         cap = @$expect('^')
-        exp = @$readRangeExpression() || 
+        exp = @$readDistinctExpression() ||
+            @$readRangeExpression() || 
             @$readNamedExpression() || 
             @$readGroupExpression() ||
             @$readConstantExpression()

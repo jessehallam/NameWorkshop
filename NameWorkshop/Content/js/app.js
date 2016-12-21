@@ -9,7 +9,7 @@
     this.parser = window.Parser_v3.Parser;
   });
 
-  app.factory('generator', function(parser) {
+  app.factory('generator', function($log, parser) {
     var stripRepeatingChars;
     stripRepeatingChars = function(s, c) {
       var ch, count, i, last, r, _i, _len;
@@ -30,18 +30,21 @@
       return r.join('');
     };
     return function(input, options) {
-      var lex, par, program;
+      var lex, par, program, tokens;
       if (input && options.ignoreWhitespace) {
         input = input.replace(/\s|\r|\n/, function() {
           return '';
         });
       }
       lex = new parser.lexer(input);
-      par = new parser.parser(lex.readTokens());
+      tokens = lex.readTokens();
+      $log.debug('Tokens:', tokens);
+      par = new parser.parser(tokens);
       program = par.program();
       if (!program) {
         throw new Error('parser error');
       }
+      $log.debug('Program:', program);
       return function() {
         var val;
         val = program["eval"]();
